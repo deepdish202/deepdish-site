@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOLNA — deep house dj</title>
+<meta name="description" content="VOLNA — deep house / progressive. Миксы, даты выступлений, букинг.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;800&family=Manrope:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0912;
+    --bg-2:#12101E;
+    --ink:#EDE9E0;
+    --dim:#6B6580;
+    --violet:#7A6CFF;
+    --amber:#FFB35C;
+    --line:rgba(237,233,224,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--violet);color:var(--bg)}
+
+  /* ---------- SPLASH ---------- */
+  #splash{
+    position:fixed;inset:0;z-index:100;
+    background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+    cursor:pointer;
+    transition:opacity .9s ease,visibility .9s;
+  }
+  #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  #splash .ring{
+    width:180px;height:180px;border-radius:50%;
+    border:1px solid var(--violet);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    animation:breathe 3.2s ease-in-out infinite;
+  }
+  #splash .ring::before,#splash .ring::after{
+    content:"";position:absolute;inset:-24px;border-radius:50%;
+    border:1px solid rgba(122,108,255,.35);
+    animation:breathe 3.2s ease-in-out infinite .4s;
+  }
+  #splash .ring::after{inset:-52px;border-color:rgba(122,108,255,.15);animation-delay:.8s}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  #splash h1{
+    font-family:'Unbounded',cursive;font-weight:800;
+    font-size:clamp(1.4rem,4vw,2.2rem);letter-spacing:.35em;text-indent:.35em;
+  }
+  #splash .enter{
+    font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--dim);
+    letter-spacing:.25em;text-transform:uppercase;
+  }
+  #splash .enter b{color:var(--amber);font-weight:400}
+
+  /* ---------- HERO ---------- */
+  header{
+    min-height:100svh;position:relative;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:2rem 1.5rem;
+    background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(122,108,255,.09),transparent 70%);
+  }
+  #viz{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hero-inner{position:relative;z-index:2}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--amber);
+    letter-spacing:.3em;text-transform:uppercase;margin-bottom:1.2rem;
+  }
+  header h2{
+    font-family:'Unbounded',cursive;font-weight:800;
+    font-size:clamp(3rem,13vw,8.5rem);
+    letter-spacing:.08em;line-height:1;
+    background:linear-gradient(180deg,var(--ink) 55%,rgba(237,233,224,.35));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  header p{color:var(--dim);margin-top:1.2rem;max-width:34rem;margin-inline:auto}
+
+  /* player */
+  .player{
+    margin-top:2.4rem;display:inline-flex;align-items:center;gap:1rem;
+    border:1px solid var(--line);border-radius:999px;
+    padding:.6rem 1.4rem .6rem .6rem;
+    background:rgba(18,16,30,.65);backdrop-filter:blur(8px);
+  }
+  .player button{
+    width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--violet);color:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .15s,background .15s;
+    flex-shrink:0;
+  }
+  .player button:hover{transform:scale(1.07);background:var(--amber)}
+  .player button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+  .player svg{width:18px;height:18px;fill:currentColor}
+  .track{
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;text-align:left;
+  }
+  .track small{display:block;color:var(--dim);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
+  .scroll-hint{
+    position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--dim);
+    letter-spacing:.3em;text-transform:uppercase;z-index:2;
+  }
+
+  /* ---------- TICKER ---------- */
+  .ticker{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;white-space:nowrap;padding:.9rem 0;
+    background:var(--bg-2);
+  }
+  .ticker-inner{
+    display:inline-block;animation:scroll 28s linear infinite;
+    font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.15em;
+    color:var(--dim);text-transform:uppercase;
+  }
+  .ticker-inner b{color:var(--amber);font-weight:400;margin:0 .4rem}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- SECTIONS ---------- */
+  section{max-width:1080px;margin:0 auto;padding:6rem 1.5rem}
+  .sec-label{
+    font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--violet);
+    letter-spacing:.3em;text-transform:uppercase;margin-bottom:1rem;
+  }
+  section h3{
+    font-family:'Unbounded',cursive;font-weight:500;
+    font-size:clamp(1.6rem,4vw,2.6rem);margin-bottom:2.4rem;letter-spacing:.03em;
+  }
+  .about p{color:var(--dim);max-width:44rem;font-size:1.05rem}
+  .about p+p{margin-top:1rem}
+
+  /* mixes */
+  .mixes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+  .mix{
+    border:1px solid var(--line);border-radius:14px;padding:1.6rem;
+    background:linear-gradient(160deg,var(--bg-2),transparent);
+    transition:border-color .2s,transform .2s;
+    display:block;color:inherit;text-decoration:none;
+  }
+  .mix:hover{border-color:var(--violet);transform:translateY(-3px)}
+  .mix .mono{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--amber);letter-spacing:.2em;text-transform:uppercase}
+  .mix h4{font-family:'Unbounded',cursive;font-weight:300;font-size:1.05rem;margin:.7rem 0 .5rem}
+  .mix p{color:var(--dim);font-size:.9rem}
+
+  /* dates */
+  .gig{
+    display:grid;grid-template-columns:110px 1fr auto;gap:1rem;align-items:baseline;
+    padding:1.3rem 0;border-bottom:1px solid var(--line);
+  }
+  .gig:first-of-type{border-top:1px solid var(--line)}
+  .gig .d{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:.85rem}
+  .gig .v{font-weight:600}
+  .gig .v small{display:block;color:var(--dim);font-weight:400;font-size:.85rem}
+  .gig .c{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim);letter-spacing:.15em;text-transform:uppercase}
+
+  /* booking */
+  .booking{text-align:center;padding-bottom:7rem}
+  .booking a.mail{
+    font-family:'Unbounded',cursive;font-weight:300;
+    font-size:clamp(1.1rem,3.4vw,2rem);color:var(--ink);text-decoration:none;
+    border-bottom:1px solid var(--violet);padding-bottom:.3rem;
+    transition:color .2s,border-color .2s;
+  }
+  .booking a.mail:hover{color:var(--amber);border-color:var(--amber)}
+  .socials{margin-top:2.6rem;display:flex;gap:1.6rem;justify-content:center;flex-wrap:wrap}
+  .socials a{
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--dim);
+    text-decoration:none;letter-spacing:.2em;text-transform:uppercase;transition:color .2s;
+  }
+  .socials a:hover{color:var(--violet)}
+
+  footer{
+    border-top:1px solid var(--line);padding:2rem 1.5rem;text-align:center;
+    font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim);letter-spacing:.15em;
+  }
+
+  .audio-warn{
+    display:none;position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);
+    background:var(--bg-2);border:1px solid var(--amber);border-radius:10px;
+    padding:.8rem 1.2rem;font-size:.8rem;z-index:50;max-width:90vw;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .audio-warn.show{display:block}
+
+  @media (max-width:640px){
+    .gig{grid-template-columns:90px 1fr}
+    .gig .c{grid-column:2}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #splash .ring,#splash .ring::before,#splash .ring::after{animation:none}
+    .ticker-inner{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     НАСТРОЙКИ САЙТА — меняйте здесь
+     Музыка: положите свой файл в папку music/ и укажите имя ниже.
+================================================================= -->
+<script>
+const CONFIG = {
+  djName: "VOLNA",
+  tagline: "deep house / progressive · настроено на глубину",
+  trackFile: "music/track.mp3",     // ← ваш трек (замените файл или путь)
+  trackTitle: "Untitled Dub — Live Cut",
+  email: "booking@example.com",
+  socials: {
+    soundcloud: "https://soundcloud.com/",
+    instagram: "https://instagram.com/",
+    telegram: "https://t.me/",
+    youtube: "https://youtube.com/"
+  }
+};
+</script>
+
+<!-- Заставка: клик = вход + запуск музыки (требование браузеров) -->
+<div id="splash" role="button" tabindex="0" aria-label="Войти на сайт и включить музыку">
+  <div class="ring"></div>
+  <h1 id="splash-name">VOLNA</h1>
+  <div class="enter">нажмите, чтобы <b>войти</b> · sound on</div>
+</div>
+
+<header>
+  <canvas id="viz" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <div class="eyebrow">deep house · progressive · dub</div>
+    <h2 id="hero-name">VOLNA</h2>
+    <p id="hero-tagline"></p>
+    <div class="player">
+      <button id="playBtn" aria-label="Пауза / воспроизведение">
+        <svg id="iconPause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        <svg id="iconPlay" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="track">
+        <small>сейчас играет</small>
+        <span id="trackTitle"></span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">листайте вниз ↓</div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<section class="about" id="about">
+  <div class="sec-label">01 — кто это</div>
+  <h3>Глубже, чем кажется</h3>
+  <p>Десять лет за пультом, тысячи часов в наушниках. Сеты, которые начинаются с шёпота баса и заканчиваются рассветом. Резидентства в клубах, фестивальные мейн-стейджи и подвалы на сто человек — везде одна задача: увести танцпол на глубину.</p>
+  <p>Звук: deep house с примесью dub-techno и прогрессива. Долгие сведения, живые правки на лету, никакого автопилота.</p>
+</section>
+
+<section id="mixes">
+  <div class="sec-label">02 — миксы</div>
+  <h3>Свежие записи</h3>
+  <div class="mixes">
+    <a class="mix" href="#" target="_blank" rel="noopener">
+      <div class="mono">podcast · 62 min</div>
+      <h4>Depth Sessions 014</h4>
+      <p>Ночной эфир: тягучий бас, размытые пэды, три невышедших трека.</p>
+    </a>
+    <a class="mix" href="#" target="_blank" rel="noopener">
+      <div class="mono">live · 94 min</div>
+      <h4>Rooftop, август</h4>
+      <p>Запись с открытой крыши — от заката до темноты, без склеек.</p>
+    </a>
+    <a class="mix" href="#" target="_blank" rel="noopener">
+      <div class="mono">studio · 48 min</div>
+      <h4>Dub Excursion</h4>
+      <p>Студийный сет в сторону dub-techno. Для наушников и поездов.</p>
+    </a>
+  </div>
+</section>
+
+<section id="dates">
+  <div class="sec-label">03 — даты</div>
+  <h3>Ближайшие выступления</h3>
+  <div class="gig"><span class="d">22.08.26</span><span class="v">Клуб «Глубина»<small>ночной сет, 02:00–05:00</small></span><span class="c">Таллин</span></div>
+  <div class="gig"><span class="d">05.09.26</span><span class="v">Warehouse Series<small>b2b-сет, закрытие</small></span><span class="c">Рига</span></div>
+  <div class="gig"><span class="d">19.09.26</span><span class="v">Фестиваль «Берег»<small>sunset stage</small></span><span class="c">Нарва</span></div>
+  <div class="gig"><span class="d">03.10.26</span><span class="v">Basement 100<small>extended set, 4 часа</small></span><span class="c">Хельсинки</span></div>
+</section>
+
+<section class="booking" id="booking">
+  <div class="sec-label" style="text-align:center">04 — букинг</div>
+  <h3 style="text-align:center">Позвать на вечеринку</h3>
+  <a class="mail" id="mailLink" href="#"></a>
+  <div class="socials" id="socials"></div>
+</section>
+
+<footer>© <span id="year"></span> <span id="footer-name"></span> · сделано на глубине</footer>
+
+<div class="audio-warn" id="audioWarn">
+  ⚠ Файл музыки не найден. Добавьте трек: <b id="warnPath"></b>
+</div>
+
+<audio id="bgm" loop preload="auto"></audio>
+
+<script>
+(function(){
+  // --- подстановка настроек ---
+  document.getElementById('splash-name').textContent = CONFIG.djName;
+  document.getElementById('hero-name').textContent = CONFIG.djName;
+  document.getElementById('hero-tagline').textContent = CONFIG.tagline;
+  document.getElementById('trackTitle').textContent = CONFIG.trackTitle;
+  document.getElementById('footer-name').textContent = CONFIG.djName;
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.title = CONFIG.djName + " — deep house dj";
+  const mail = document.getElementById('mailLink');
+  mail.textContent = CONFIG.email; mail.href = "mailto:" + CONFIG.email;
+  const socials = document.getElementById('socials');
+  for (const [name,url] of Object.entries(CONFIG.socials)){
+    const a = document.createElement('a');
+    a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = name;
+    socials.appendChild(a);
+  }
+  const tickerText = ("ближайшие даты <b>●</b> таллин 22.08 <b>●</b> рига 05.09 <b>●</b> нарва 19.09 <b>●</b> хельсинки 03.10 <b>●</b> ").repeat(2);
+  document.getElementById('ticker').innerHTML = tickerText + tickerText;
+
+  // --- аудио + вход ---
+  const audio = document.getElementById('bgm');
+  audio.src = CONFIG.trackFile;
+  const splash = document.getElementById('splash');
+  const playBtn = document.getElementById('playBtn');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  const warn = document.getElementById('audioWarn');
+  document.getElementById('warnPath').textContent = CONFIG.trackFile;
+
+  let ctx, analyser, dataArr, audioReady = false;
+
+  function setupAnalyser(){
+    if (audioReady) return;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ctx.createMediaElementSource(audio);
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      src.connect(analyser); analyser.connect(ctx.destination);
+      dataArr = new Uint8Array(analyser.frequencyBinCount);
+      audioReady = true;
+    } catch(e){ /* визуализация опциональна */ }
+  }
+
+  function updateIcons(){
+    const playing = !audio.paused;
+    iconPlay.style.display = playing ? "none" : "block";
+    iconPause.style.display = playing ? "block" : "none";
+  }
+
+  function enter(){
+    splash.classList.add('hidden');
+    setupAnalyser();
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+    audio.play().catch(()=>{ warn.classList.add('show'); });
+    updateIcons();
+  }
+  splash.addEventListener('click', enter);
+  splash.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') enter(); });
+  audio.addEventListener('error', ()=> warn.classList.add('show'));
+  audio.addEventListener('playing', ()=> warn.classList.remove('show'));
+
+  playBtn.addEventListener('click', ()=>{
+    if (audio.paused){ if (ctx) ctx.resume(); audio.play().catch(()=>warn.classList.add('show')); }
+    else audio.pause();
+    updateIcons();
+  });
+  audio.addEventListener('play', updateIcons);
+  audio.addEventListener('pause', updateIcons);
+
+  // --- визуализация: кольца-сабвуфер, дышат от баса ---
+  const canvas = document.getElementById('viz');
+  const c2d = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.height = canvas.offsetHeight * devicePixelRatio;
+  }
+  window.addEventListener('resize', resize); resize();
+
+  let t = 0;
+  function draw(){
+    requestAnimationFrame(draw);
+    const w = canvas.width, h = canvas.height;
+    c2d.clearRect(0,0,w,h);
+    const cx = w/2, cy = h*0.42;
+
+    let bass = 0.15;
+    if (audioReady && !audio.paused && !reduced){
+      analyser.getByteFrequencyData(dataArr);
+      let sum = 0;
+      for (let i=0;i<10;i++) sum += dataArr[i];
+      bass = (sum/10)/255;
+    } else if (!reduced){
+      t += 0.012;
+      bass = 0.12 + Math.sin(t)*0.05;
+    }
+
+    const base = Math.min(w,h)*0.16;
+    for (let i=0;i<5;i++){
+      const r = base + i*base*0.55 + bass*base*0.9;
+      const alpha = Math.max(0, 0.30 - i*0.055 + bass*0.15);
+      c2d.beginPath();
+      c2d.arc(cx, cy, r, 0, Math.PI*2);
+      c2d.strokeStyle = i % 2 === 0
+        ? `rgba(122,108,255,${alpha})`
+        : `rgba(255,179,92,${alpha*0.7})`;
+      c2d.lineWidth = devicePixelRatio * (1.4 - i*0.18);
+      c2d.stroke();
+    }
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
