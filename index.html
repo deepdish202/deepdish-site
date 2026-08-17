@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEEP DISH — фан-страница</title>
+<meta name="description" content="Неофициальная фан-страница о Deep Dish — Dubfire и Sharam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --aqua:#A3DEDA;        /* фон, как на обложке */
+    --aqua-2:#B4E6E2;      /* чуть светлее — панели */
+    --aqua-3:#8FD2CD;      /* чуть темнее — подложки */
+    --gray:#7E8A88;        /* серый заголовков, как на обложке */
+    --ink:#44514F;         /* серо-зелёный для основного текста */
+    --white:#FDFFFE;
+    --orange:#DD6B1E;      /* та самая одна оранжевая таблетка */
+    --line:rgba(68,81,79,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--aqua);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:16.5px;line-height:1.65;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--orange);color:#fff}
+
+  /* декоративная таблетка */
+  .pill{
+    display:inline-block;width:14px;height:34px;border-radius:7px;
+    background:var(--gray);
+  }
+  .pill.o{background:var(--orange)}
+  .pill.w{background:var(--white)}
+  .pill.s{width:10px;height:24px;border-radius:5px}
+
+  /* ---------- SPLASH ---------- */
+  #splash{
+    position:fixed;inset:0;z-index:100;background:var(--aqua);
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+    padding:0 clamp(1.5rem,8vw,6rem);gap:2rem;
+    cursor:pointer;transition:opacity .7s ease,visibility .7s;
+  }
+  #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  #splash h1{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;
+    font-size:clamp(1.6rem,6vw,3.2rem);
+    letter-spacing:.28em;line-height:1.5;color:var(--gray);text-transform:uppercase;
+  }
+  #splash h1 .w{color:var(--white)}
+  #splash .pills{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;max-width:340px}
+  #splash .pills .pill:nth-child(3){animation:blink 2.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  #splash .enter{
+    font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--ink);
+    letter-spacing:.3em;text-transform:uppercase;
+  }
+  #splash .enter b{color:var(--orange);font-weight:500}
+
+  /* ---------- HERO ---------- */
+  header{
+    position:relative;overflow:hidden;
+    padding:6.5rem clamp(1.5rem,8vw,6rem) 4.5rem;
+  }
+  .hero-inner{position:relative;z-index:2;max-width:900px}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink);
+    letter-spacing:.3em;text-transform:uppercase;margin-bottom:1.6rem;opacity:.75;
+  }
+  header h2{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;text-transform:uppercase;
+    font-size:clamp(2.2rem,8.5vw,5rem);
+    letter-spacing:.22em;line-height:1.35;color:var(--gray);
+  }
+  header h2 .w{color:var(--white)}
+  header .sub{margin-top:1.4rem;max-width:34rem;color:var(--ink)}
+
+  /* эквалайзер из таблеток */
+  #viz{
+    display:block;width:100%;max-width:560px;height:110px;
+    margin-top:2.2rem;
+  }
+
+  .player{
+    margin-top:2rem;display:inline-flex;align-items:center;gap:1rem;
+    background:var(--aqua-2);border-radius:999px;
+    padding:.5rem 1.4rem .5rem .5rem;max-width:100%;
+  }
+  .player button{
+    width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--gray);color:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;flex-shrink:0;
+  }
+  .player button:hover{background:var(--orange)}
+  .player button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+  .player svg{width:17px;height:17px;fill:currentColor}
+  .track{font-family:'IBM Plex Mono',monospace;font-size:.74rem;text-align:left;color:var(--ink)}
+  .track small{display:block;opacity:.65;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase}
+
+  /* ---------- SECTIONS ---------- */
+  .wrap{max-width:900px;margin:0 auto;padding:0 clamp(1.5rem,6vw,3rem)}
+  section{padding:3.4rem 0;border-top:1px solid var(--line)}
+  .sec-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem}
+  .sec-head .pill{flex-shrink:0}
+  h3{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;text-transform:uppercase;
+    font-size:clamp(1.1rem,3vw,1.5rem);letter-spacing:.18em;color:var(--gray);
+  }
+  p{color:var(--ink)}
+  p+p{margin-top:.9rem}
+  p b{color:#33403E}
+
+  /* участники */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+  .member{
+    background:var(--aqua-2);border-radius:18px;overflow:hidden;
+    transition:transform .18s,background .18s;
+  }
+  .member:hover{transform:translateY(-4px);background:var(--white)}
+  .member .photo{
+    aspect-ratio:1/1;position:relative;overflow:hidden;
+    background:var(--aqua-3);
+  }
+  .member .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .member .photo .ph{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1.1rem;
+  }
+  .member .photo .ph .cluster{display:flex;gap:10px;align-items:flex-end}
+  .member .photo .ph small{
+    font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--ink);opacity:.7;
+    letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:0 1rem;
+  }
+  .member .info{padding:1.4rem 1.5rem 1.6rem}
+  .member .idx{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--orange);
+    letter-spacing:.25em;text-transform:uppercase;
+  }
+  .member h4{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;text-transform:uppercase;
+    font-size:1.2rem;letter-spacing:.14em;color:var(--gray);margin:.4rem 0 .1rem;
+  }
+  .member .real{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink);opacity:.7;letter-spacing:.1em;margin-bottom:.8rem;text-transform:uppercase}
+  .member p{font-size:.92rem}
+
+  /* хронология */
+  .timeline{display:flex;flex-direction:column}
+  .tl{
+    display:grid;grid-template-columns:110px 22px 1fr;gap:1rem;align-items:start;
+    padding:1.1rem 0;
+  }
+  .tl+.tl{border-top:1px dashed var(--line)}
+  .tl .y{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--gray);
+    letter-spacing:.14em;font-size:.95rem;padding-top:.15rem;
+  }
+  .tl .dot{padding-top:.2rem}
+  .tl .dot .pill{width:10px;height:26px;border-radius:5px}
+  .tl:nth-child(3) .dot .pill{background:var(--white)}    /* Yoshiesque — белая */
+  .tl:nth-child(4) .dot .pill{background:var(--orange)}   /* Yoshiesque Two — оранжевая */
+  .tl h4{
+    font-family:'IBM Plex Mono',monospace;font-weight:500;text-transform:uppercase;
+    letter-spacing:.1em;font-size:.95rem;color:#3A4745;
+  }
+  .tl p{font-size:.92rem;margin-top:.15rem}
+
+  /* дискография */
+  .discs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.2rem}
+  .disc-card{
+    background:var(--aqua-2);border-radius:16px;padding:1.4rem 1.5rem;
+    transition:transform .18s,background .18s;
+  }
+  .disc-card:hover{transform:translateY(-4px);background:var(--white)}
+  .disc-card .code{
+    font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--ink);opacity:.7;
+    letter-spacing:.22em;text-transform:uppercase;
+  }
+  .disc-card h4{
+    font-family:'IBM Plex Mono',monospace;font-weight:700;text-transform:uppercase;
+    letter-spacing:.1em;font-size:1rem;color:var(--gray);margin:.5rem 0 .4rem;
+  }
+  .disc-card p{font-size:.88rem}
+  .disc-card .pill{width:10px;height:24px;border-radius:5px;margin-bottom:.8rem}
+
+  .note{
+    background:var(--aqua-2);border-radius:16px;
+    padding:1.5rem 1.6rem;margin-top:1.4rem;
+  }
+  .note p{font-style:italic}
+
+  /* форма */
+  .fb-form{margin-top:1.6rem;display:flex;flex-direction:column;gap:1rem}
+  .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .fb-form label{
+    display:flex;flex-direction:column;gap:.45rem;
+    font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  }
+  .fb-form input,.fb-form textarea{
+    font-family:'IBM Plex Sans',sans-serif;font-size:1rem;color:#33403E;
+    background:var(--white);border:none;border-radius:12px;
+    padding:.9rem 1.1rem;transition:box-shadow .15s;resize:vertical;
+  }
+  .fb-form input::placeholder,.fb-form textarea::placeholder{color:#9AA6A4}
+  .fb-form input:focus,.fb-form textarea:focus{
+    outline:none;box-shadow:0 0 0 3px var(--orange);
+  }
+  .fb-form .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0;padding:0;border:0}
+  .fb-form .captcha{max-width:320px}
+  .fb-form .cap-q{
+    color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:none;
+  }
+  .fb-form button{
+    align-self:flex-start;cursor:pointer;border:none;border-radius:999px;
+    background:var(--gray);color:var(--white);
+    font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.9rem;
+    text-transform:uppercase;letter-spacing:.2em;
+    padding:.95rem 2.4rem;transition:background .15s,transform .15s;
+  }
+  .fb-form button:hover{background:var(--orange);transform:translateY(-2px)}
+  .fb-form button:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  .fb-form button:disabled{opacity:.55;cursor:default;transform:none}
+  .fb-status{font-size:.88rem;min-height:1.4em;font-family:'IBM Plex Mono',monospace}
+  .fb-status.ok{color:#2E6B4F}
+  .fb-status.err{color:var(--orange)}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:2.4rem 1.5rem;text-align:center;
+    font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink);
+    letter-spacing:.14em;line-height:2.1;text-transform:uppercase;opacity:.85;
+  }
+  footer a{color:#33403E;text-decoration:underline;text-underline-offset:3px}
+  footer a:hover{color:var(--orange)}
+  footer .pills{display:flex;gap:10px;justify-content:center;margin-bottom:1.2rem;align-items:flex-end}
+
+  .audio-warn{
+    display:none;position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);
+    background:var(--white);border-radius:12px;
+    padding:.85rem 1.2rem;font-size:.78rem;z-index:50;max-width:90vw;color:#33403E;
+    font-family:'IBM Plex Mono',monospace;box-shadow:0 10px 30px rgba(68,81,79,.25);
+  }
+  .audio-warn.show{display:block}
+  .audio-warn b{color:var(--orange)}
+
+  @media (prefers-reduced-motion:reduce){
+    #splash .pills .pill{animation:none !important}
+    html{scroll-behavior:auto}
+  }
+
+  /* ---------- адаптивность ---------- */
+  @media (max-width:640px){
+    body{font-size:15.5px}
+    header{padding:4.2rem 1.2rem 3.2rem}
+    header h2{letter-spacing:.14em}
+    #splash h1{letter-spacing:.18em}
+    section{padding:2.6rem 0}
+    .duo{grid-template-columns:1fr}
+    .fb-row{grid-template-columns:1fr}
+    .tl{grid-template-columns:74px 18px 1fr;gap:.7rem}
+    .track span{
+      display:inline-block;max-width:50vw;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;
+    }
+    #viz{height:90px}
+  }
+  @media (max-width:380px){
+    .fb-form button{align-self:stretch;text-align:center}
+  }
+  @media (min-width:1600px){
+    body{font-size:17.5px}
+    .wrap{max-width:980px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     НАСТРОЙКИ — меняйте здесь.
+     Музыка: кладите любые аудиофайлы (mp3/ogg/wav/m4a) в папку music/.
+     Фото участников: загрузите images/dubfire.jpg и images/sharam.jpg —
+     карточки подхватят их сами. Пока фото нет — стилизованная заглушка.
+================================================================= -->
+<script>
+const CONFIG = {
+  githubUser: "deepdish202",
+  githubRepo: "deepdish-site",
+  musicFolder: "music",
+  feedbackEmail: "deepdish202@gmail.com"
+};
+</script>
+
+<!-- Заставка: клик = вход + музыка (браузеры не разрешают звук без клика) -->
+<div id="splash" role="button" tabindex="0" aria-label="Войти на страницу и включить музыку">
+  <h1>Deep Dish<br><span class="w">Fan Page</span></h1>
+  <div class="pills">
+    <span class="pill"></span><span class="pill s"></span><span class="pill o"></span>
+    <span class="pill"></span><span class="pill w s"></span><span class="pill s"></span>
+    <span class="pill"></span>
+  </div>
+  <div class="enter">нажмите, чтобы <b>войти</b> · sound on</div>
+</div>
+
+<header>
+  <div class="hero-inner">
+    <div class="eyebrow">неофициальная фан-страница</div>
+    <h2>Deep Dish<br><span class="w">Fan Page</span></h2>
+    <p class="sub">Dubfire и Sharam. Дуэт, который научил танцполы дышать медленно и глубоко.</p>
+    <canvas id="viz" aria-hidden="true"></canvas>
+    <div class="player">
+      <button id="playBtn" aria-label="Пауза / воспроизведение">
+        <svg id="iconPause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        <svg id="iconPlay" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="track">
+        <small>now playing</small>
+        <span id="trackTitle">загрузка…</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="duo">
+  <div class="sec-head"><span class="pill o s"></span><h3>Участники</h3></div>
+  <div class="duo">
+    <article class="member">
+      <div class="photo">
+        <div class="ph">
+          <div class="cluster">
+            <span class="pill"></span><span class="pill o"></span><span class="pill s"></span>
+          </div>
+          <small>загрузите фото: images/dubfire.jpg</small>
+        </div>
+        <img src="images/dubfire.jpg" alt="Dubfire" loading="lazy"
+             onerror="this.remove()" onload="this.previousElementSibling.remove()">
+      </div>
+      <div class="info">
+        <div class="idx">member · 01</div>
+        <h4>Dubfire</h4>
+        <div class="real">Али Ширазиния</div>
+        <p>Тёмная, техничная сторона дуэта. После паузы Deep Dish ушёл в минимал и техно и стал одним из самых востребованных сольных артистов мировой сцены — но фирменная глубина слышна в каждом его сете.</p>
+      </div>
+    </article>
+    <article class="member">
+      <div class="photo">
+        <div class="ph">
+          <div class="cluster">
+            <span class="pill s"></span><span class="pill w"></span><span class="pill"></span>
+          </div>
+          <small>загрузите фото: images/sharam.jpg</small>
+        </div>
+        <img src="images/sharam.jpg" alt="Sharam" loading="lazy"
+             onerror="this.remove()" onload="this.previousElementSibling.remove()">
+      </div>
+      <div class="info">
+        <div class="idx">member · 02</div>
+        <h4>Sharam</h4>
+        <div class="real">Шарам Тайеби</div>
+        <p>Мелодическое сердце Deep Dish. В сольной карьере продолжил хаус-линию дуэта, выпускал большие клубные хиты и держит живую связь с корнями — глубоким, вокальным, тёплым звуком.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="pill s"></span><h3>Кто такие</h3></div>
+  <p><b>Deep Dish</b> — дуэт двух музыкантов иранского происхождения, встретившихся в Вашингтоне в начале девяностых. Собственный лейбл, культовые ремиксы и сеты на всю ночь сделали их одним из главных имён прогрессив- и дип-хауса. Серия миксов Yoshiesque — концентрат их звука тех лет.</p>
+  <p>Их звук узнаётся мгновенно: упругий бас, длинные сведения, мелодии, которые не давят, а затягивают. Это музыка не про «руки вверх», а про состояние.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="pill w s"></span><h3>Хронология</h3></div>
+  <div class="timeline">
+    <div class="tl">
+      <div class="y">'90s</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Старт в Вашингтоне</h4>
+        <p>Знакомство, первые совместные работы и основание лейбла, вокруг которого вырастет целая сцена.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">1998</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Junk Science</h4>
+        <p>Дебютный альбом — визитная карточка их фирменного глубокого звука.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">1999</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Yoshiesque</h4>
+        <p>Первая часть легендарной серии миксов.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">2001</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Yoshiesque Two</h4>
+        <p>Продолжение: два диска — Westcoast и Eastcoast. Та самая обложка, в стиле которой сделана эта страница.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">2002</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>«Грэмми»</h4>
+        <p>Премия за лучший ремикс — переработку «Thank You» Dido, ставшую классикой жанра.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">2005</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>George Is On</h4>
+        <p>Второй альбом с хитами «Flashdance» и «Say Hello» — пик всемирной славы дуэта.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">2006</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Сольные пути</h4>
+        <p>Дуэт берёт паузу: Dubfire уходит в жёсткое техно, Sharam развивает сольную карьеру.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">2014</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Возвращение</h4>
+        <p>Реюнион, новые синглы и совместные выступления — химия никуда не делась.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="pill s"></span><h3>С чего начать</h3></div>
+  <div class="discs">
+    <div class="disc-card">
+      <span class="pill o"></span>
+      <div class="code">mix · 1999–2001</div>
+      <h4>Yoshiesque 1–2</h4>
+      <p>Та самая серия: глубина, drama и безупречное сведение.</p>
+    </div>
+    <div class="disc-card">
+      <span class="pill w"></span>
+      <div class="code">album · 1998</div>
+      <h4>Junk Science</h4>
+      <p>Меланхолия и бас — фундамент всего их звука.</p>
+    </div>
+    <div class="disc-card">
+      <span class="pill"></span>
+      <div class="code">album · 2005</div>
+      <h4>George Is On</h4>
+      <p>«Flashdance», «Say Hello» — самый доступный вход в мир Deep Dish.</p>
+    </div>
+  </div>
+  <div class="note">
+    <p>Почему я их слушаю: это редкая электронная музыка, которая одинаково работает и на танцполе в четыре утра, и в наушниках в дождливый вторник. Она никуда не торопится — и этим побеждает.</p>
+  </div>
+</section>
+
+<section id="feedback">
+  <div class="sec-head"><span class="pill o s"></span><h3>Такой же фанат? Напишите!</h3></div>
+  <p>Собираю вокруг этой страницы людей, которым Deep Dish так же дороги. Идеи, любимые треки, редкие миксы, просто привет — всё в тему. Будем развивать вместе.</p>
+  <form id="fbForm" class="fb-form" novalidate>
+    <div class="fb-row">
+      <label>Имя
+        <input type="text" name="name" required maxlength="80" placeholder="Как вас зовут">
+      </label>
+      <label>Email
+        <input type="email" name="email" required maxlength="120" placeholder="Куда вам ответить">
+      </label>
+    </div>
+    <label>Сообщение
+      <textarea name="message" required maxlength="2000" rows="5" placeholder="Любимый трек, идея для страницы, что угодно…"></textarea>
+    </label>
+    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="captcha">Проверка: <span id="capQ" class="cap-q">…</span>
+      <input type="text" id="capA" inputmode="numeric" autocomplete="off" required
+             maxlength="4" placeholder="Ответ числом">
+    </label>
+    <button type="submit" id="fbBtn">Отправить</button>
+    <div class="fb-status" id="fbStatus" role="status"></div>
+  </form>
+</section>
+
+</div>
+
+<footer>
+  <div class="pills" aria-hidden="true">
+    <span class="pill s"></span><span class="pill o s"></span><span class="pill s"></span><span class="pill w s"></span><span class="pill s"></span>
+  </div>
+  Неофициальная фан-страница · сделана поклонником · не связана с Deep Dish<br>
+  Оформление — по мотивам, без использования оригинальной обложки<br>
+  Подробнее: <a href="https://en.wikipedia.org/wiki/Deep_Dish_(band)" target="_blank" rel="noopener">Wikipedia</a>
+</footer>
+
+<div class="audio-warn" id="audioWarn">
+  ⚠ Аудио не найдено. Загрузите mp3-файлы в папку <b id="warnPath"></b>
+</div>
+
+<audio id="bgm" preload="auto"></audio>
+
+<script>
+(function(){
+  const audio = document.getElementById('bgm');
+  const splash = document.getElementById('splash');
+  const playBtn = document.getElementById('playBtn');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  const warn = document.getElementById('audioWarn');
+  const trackTitleEl = document.getElementById('trackTitle');
+  document.getElementById('warnPath').textContent = CONFIG.musicFolder + "/";
+
+  /* --- плейлист из папки music через GitHub API --- */
+  const AUDIO_EXT = /\.(mp3|ogg|wav|m4a|aac|flac)$/i;
+  let playlist = [], current = 0;
+
+  function trackName(url){
+    try {
+      const raw = decodeURIComponent(url.split('/').pop());
+      return raw.replace(AUDIO_EXT,'').replace(/[_-]+/g,' ');
+    } catch(e){ return "Track"; }
+  }
+  function loadTrack(i){
+    if (!playlist.length) return;
+    current = ((i % playlist.length) + playlist.length) % playlist.length;
+    audio.src = playlist[current];
+    trackTitleEl.textContent = trackName(playlist[current]) +
+      (playlist.length > 1 ? "  ·  " + (current+1) + "/" + playlist.length : "");
+  }
+
+  const apiUrl = "https://api.github.com/repos/" + CONFIG.githubUser + "/" +
+                 CONFIG.githubRepo + "/contents/" + CONFIG.musicFolder;
+  const playlistReady = fetch(apiUrl)
+    .then(r => r.ok ? r.json() : [])
+    .then(files => {
+      playlist = (Array.isArray(files) ? files : [])
+        .filter(f => f.type === "file" && AUDIO_EXT.test(f.name))
+        .sort((a,b) => a.name.localeCompare(b.name, undefined, {numeric:true}))
+        .map(f => CONFIG.musicFolder + "/" + encodeURIComponent(f.name));
+      if (playlist.length){ loadTrack(0); warn.classList.remove('show'); }
+      else warn.classList.add('show');
+    })
+    .catch(() => warn.classList.add('show'));
+
+  audio.addEventListener('ended', () => { loadTrack(current+1); audio.play().catch(()=>{}); });
+  audio.addEventListener('error', () => {
+    if (playlist.length > 1){ loadTrack(current+1); audio.play().catch(()=>{}); }
+    else warn.classList.add('show');
+  });
+  audio.addEventListener('playing', () => warn.classList.remove('show'));
+
+  /* --- аудиоанализ --- */
+  let ctx, analyser, dataArr, audioReady = false;
+  function setupAnalyser(){
+    if (audioReady) return;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ctx.createMediaElementSource(audio);
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 128;
+      src.connect(analyser); analyser.connect(ctx.destination);
+      dataArr = new Uint8Array(analyser.frequencyBinCount);
+      audioReady = true;
+    } catch(e){}
+  }
+
+  function updateIcons(){
+    const playing = !audio.paused;
+    iconPlay.style.display = playing ? "none" : "block";
+    iconPause.style.display = playing ? "block" : "none";
+  }
+
+  function enter(){
+    splash.classList.add('hidden');
+    setupAnalyser();
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+    playlistReady.then(() => {
+      if (playlist.length) audio.play().catch(()=>warn.classList.add('show'));
+      updateIcons();
+    });
+    updateIcons();
+  }
+  splash.addEventListener('click', enter);
+  splash.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') enter(); });
+
+  playBtn.addEventListener('click', () => {
+    if (audio.paused){ if (ctx) ctx.resume(); audio.play().catch(()=>warn.classList.add('show')); }
+    else audio.pause();
+    updateIcons();
+  });
+  audio.addEventListener('play', updateIcons);
+  audio.addEventListener('pause', updateIcons);
+
+  /* --- форма обратной связи (FormSubmit, без сервера) --- */
+  const fbForm = document.getElementById('fbForm');
+  const fbBtn = document.getElementById('fbBtn');
+  const fbStatus = document.getElementById('fbStatus');
+  const capQ = document.getElementById('capQ');
+  const capA = document.getElementById('capA');
+
+  /* простая математическая капча */
+  let capAnswer = 0;
+  function newCaptcha(){
+    const a = 2 + Math.floor(Math.random()*8);
+    const b = 1 + Math.floor(Math.random()*8);
+    const plus = Math.random() < 0.65;
+    if (plus || a <= b){ capAnswer = a + b; capQ.textContent = a + " + " + b + " = ?"; }
+    else { capAnswer = a - b; capQ.textContent = a + " − " + b + " = ?"; }
+    capA.value = "";
+  }
+  newCaptcha();
+
+  let lastSent = 0;   /* защита от частых отправок */
+
+  fbForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    fbStatus.className = 'fb-status';
+    if (!fbForm.reportValidity()) return;
+    if (fbForm._honey.value) return;
+
+    if (parseInt(capA.value, 10) !== capAnswer){
+      fbStatus.textContent = 'Проверка не пройдена — решите пример ещё раз.';
+      fbStatus.classList.add('err');
+      newCaptcha();
+      capA.focus();
+      return;
+    }
+    if (Date.now() - lastSent < 30000){
+      fbStatus.textContent = 'Слишком часто. Подождите полминуты.';
+      fbStatus.classList.add('err');
+      return;
+    }
+
+    fbBtn.disabled = true;
+    fbStatus.textContent = 'Отправляю…';
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(CONFIG.feedbackEmail), {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({
+          name: fbForm.name.value.trim(),
+          email: fbForm.email.value.trim(),
+          message: fbForm.message.value.trim(),
+          _subject: 'Сообщение с фан-страницы Deep Dish',
+          _template: 'table',
+          _captcha: 'false'
+        })
+      });
+      if (!res.ok) throw new Error();
+      lastSent = Date.now();
+      fbForm.reset();
+      newCaptcha();
+      fbStatus.textContent = 'Отправлено! Спасибо — отвечу на вашу почту.';
+      fbStatus.classList.add('ok');
+    } catch(err){
+      newCaptcha();
+      fbStatus.textContent = 'Не получилось отправить. Попробуйте ещё раз чуть позже.';
+      fbStatus.classList.add('err');
+    } finally {
+      fbBtn.disabled = false;
+    }
+  });
+
+  /* --- эквалайзер из «таблеток», как на обложке: пульсирует от музыки --- */
+  const canvas = document.getElementById('viz');
+  const c2d = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){
+    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.height = canvas.offsetHeight * devicePixelRatio;
+  }
+  window.addEventListener('resize', resize); resize();
+
+  const BARS = 16;
+  const ORANGE_I = 5, WHITE_I = 10;   /* одна оранжевая и одна белая, как на обложке */
+  let t = 0;
+
+  function roundRect(x,y,w,h,r){
+    c2d.beginPath();
+    c2d.moveTo(x+r,y);
+    c2d.arcTo(x+w,y,x+w,y+h,r);
+    c2d.arcTo(x+w,y+h,x,y+h,r);
+    c2d.arcTo(x,y+h,x,y,r);
+    c2d.arcTo(x,y,x+w,y,r);
+    c2d.closePath();
+  }
+
+  function draw(){
+    requestAnimationFrame(draw);
+    const w = canvas.width, h = canvas.height;
+    c2d.clearRect(0,0,w,h);
+
+    const dpr = devicePixelRatio;
+    const pw = 11*dpr;                     /* ширина таблетки */
+    const gap = (w - BARS*pw) / (BARS+1);
+    const minH = 20*dpr, maxH = h*0.92;
+
+    let levels = [];
+    if (audioReady && !audio.paused && !reduced){
+      analyser.getByteFrequencyData(dataArr);
+      for (let i=0;i<BARS;i++){
+        const v = dataArr[Math.floor(i*dataArr.length/BARS/1.6)] / 255;
+        levels.push(v);
+      }
+    } else {
+      t += reduced ? 0 : 0.02;
+      for (let i=0;i<BARS;i++){
+        levels.push(0.18 + (reduced ? 0 : Math.abs(Math.sin(t + i*0.7))*0.22));
+      }
+    }
+
+    for (let i=0;i<BARS;i++){
+      const bh = minH + levels[i]*(maxH-minH);
+      const x = gap + i*(pw+gap);
+      const y = h - bh;
+      const r = pw/2;
+      if (i === ORANGE_I)      c2d.fillStyle = '#DD6B1E';
+      else if (i === WHITE_I)  c2d.fillStyle = '#FDFFFE';
+      else                     c2d.fillStyle = '#7E8A88';
+      roundRect(x, y, pw, bh, r);
+      c2d.fill();
+    }
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
