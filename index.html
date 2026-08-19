@@ -344,6 +344,8 @@
     font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink);
     letter-spacing:.14em;line-height:2.1;text-transform:uppercase;opacity:.85;
   }
+  footer #copyline{color:var(--gray);font-weight:500}
+  footer #copyline b{color:var(--orange);font-weight:500}
   footer a{color:#33403E;text-decoration:underline;text-underline-offset:3px}
   footer a:hover{color:var(--orange)}
   footer .pills{display:flex;gap:10px;justify-content:center;margin-bottom:1.2rem;align-items:flex-end}
@@ -400,6 +402,7 @@ const CONFIG = {
   githubRepo: "deepdish-site",
   musicFolder: "music",
   feedbackEmail: "deepdish202@gmail.com",
+  siteVersion: "1.0",     // ← поднимайте номер при каждом обновлении файла
   // Счётчик посещений. Статистика хранится на сервере сервиса,
   // поэтому замена index.html её НЕ обнуляет. Заполните нужный:
   goatcounterCode: "",     // код с goatcounter.com, напр. "deepdish" → deepdish.goatcounter.com
@@ -674,6 +677,7 @@ const CONFIG = {
   <div class="pills" aria-hidden="true">
     <span class="pill s"></span><span class="pill o s"></span><span class="pill s"></span><span class="pill w s"></span><span class="pill s"></span>
   </div>
+  <span id="copyline">© 2026 · deepdish.ru · все права защищены · v1.0</span><br>
   Неофициальная фан-страница · сделана поклонником · не связана с Deep Dish<br>
   Оформление — по мотивам, без использования оригинальной обложки<br>
   Подробнее: <a href="https://en.wikipedia.org/wiki/Deep_Dish_(band)" target="_blank" rel="noopener">Wikipedia</a>
@@ -848,6 +852,13 @@ const CONFIG = {
     if (ctx) ctx.resume();
     loadTrack(current + 1, true);
   });
+
+  /* --- копирайт и версия --- */
+  (function(){
+    const el = document.getElementById('copyline');
+    if (el) el.innerHTML = "© " + new Date().getFullYear() +
+      " · deepdish.ru · все права защищены · <b>v" + CONFIG.siteVersion + "</b>";
+  })();
 
   /* --- раскрытие хронологии --- */
   (function(){
