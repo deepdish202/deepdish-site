@@ -402,7 +402,7 @@ const CONFIG = {
   githubRepo: "deepdish-site",
   musicFolder: "music",
   feedbackEmail: "deepdish202@gmail.com",
-  siteVersion: "1.0",     // ← поднимайте номер при каждом обновлении файла
+  siteVersion: "1.1",     // ← поднимайте номер при каждом обновлении файла
   // Счётчик посещений. Статистика хранится на сервере сервиса,
   // поэтому замена index.html её НЕ обнуляет. Заполните нужный:
   goatcounterCode: "",     // код с goatcounter.com, напр. "deepdish" → deepdish.goatcounter.com
@@ -700,29 +700,56 @@ const CONFIG = {
   const trackTitleEl = document.getElementById('trackTitle');
   document.getElementById('warnPath').textContent = CONFIG.musicFolder + "/";
 
-  /* --- фото участников: пробуем разные расширения и регистр --- */
+  /* --- фото участников: спрашиваем список файлов у GitHub --- */
   (function(){
-    const EXTS = ['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP'];
-    document.querySelectorAll('img.member-photo').forEach(img => {
-      const base = img.dataset.base;
-      const names = [];
-      EXTS.forEach(e => {
-        names.push('images/' + base + '.' + e);
-        names.push('images/' + base.charAt(0).toUpperCase() + base.slice(1) + '.' + e);
-      });
-      let i = 0;
-      function tryNext(){
-        if (i >= names.length) return;          /* не нашли — остаётся заглушка */
-        img.src = names[i++];
-      }
-      img.addEventListener('error', tryNext);
-      img.addEventListener('load', () => {
+    const imgs = Array.from(document.querySelectorAll('img.member-photo'));
+    if (!imgs.length) return;
+    const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+
+    function show(img, url){
+      img.onload = () => {
         img.style.display = 'block';
         const ph = img.parentElement.querySelector('.ph');
         if (ph) ph.remove();
+      };
+      img.onerror = () => {};
+      img.src = url;
+    }
+
+    /* план А: реальный список файлов из репозитория */
+    fetch("https://api.github.com/repos/" + CONFIG.githubUser + "/" +
+          CONFIG.githubRepo + "/contents/images")
+      .then(r => r.ok ? r.json() : [])
+      .then(files => {
+        const list = (Array.isArray(files) ? files : [])
+          .filter(f => f.type === 'file' && IMG_EXT.test(f.name));
+        if (!list.length) throw new Error('empty');
+        imgs.forEach(img => {
+          const base = img.dataset.base.toLowerCase();
+          const hit = list.find(f => f.name.toLowerCase().startsWith(base));
+          if (hit) show(img, hit.path.split('/').map(encodeURIComponent).join('/'));
+        });
+      })
+      .catch(() => {
+        /* план Б: перебор типовых имён, если API недоступен */
+        imgs.forEach(img => {
+          const base = img.dataset.base;
+          const cap = base.charAt(0).toUpperCase() + base.slice(1);
+          const names = [];
+          ['jpg','jpeg','png','webp','JPG','JPEG','PNG'].forEach(e => {
+            names.push('images/' + base + '.' + e);
+            names.push('images/' + cap + '.' + e);
+          });
+          let k = 0;
+          img.onload = () => {
+            img.style.display = 'block';
+            const ph = img.parentElement.querySelector('.ph');
+            if (ph) ph.remove();
+          };
+          img.onerror = () => { if (k < names.length) img.src = names[k++]; };
+          img.src = names[k++];
+        });
       });
-      tryNext();
-    });
   })();
 
   /* --- альбомы и плейлист: папки внутри music/ становятся альбомами --- */
