@@ -123,7 +123,15 @@
   .album-btn .pill{width:7px;height:16px;border-radius:4px;background:var(--gray)}
   .album-btn:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 
-  .tracklist{list-style:none;background:var(--aqua-2);border-radius:16px;overflow:hidden}
+  .tracklist{
+    list-style:none;background:var(--aqua-2);border-radius:16px;
+    max-height:340px;overflow-y:auto;overscroll-behavior:contain;
+    scrollbar-width:thin;scrollbar-color:var(--gray) var(--aqua-2);
+  }
+  .tracklist::-webkit-scrollbar{width:8px}
+  .tracklist::-webkit-scrollbar-track{background:transparent}
+  .tracklist::-webkit-scrollbar-thumb{background:var(--gray);border-radius:4px}
+  .tracklist::-webkit-scrollbar-thumb:hover{background:var(--orange)}
   .tracklist li{
     display:grid;grid-template-columns:34px 1fr auto;gap:.8rem;align-items:center;
     padding:.85rem 1.2rem;cursor:pointer;transition:background .12s;
@@ -402,7 +410,7 @@ const CONFIG = {
   githubRepo: "deepdish-site",
   musicFolder: "music",
   feedbackEmail: "deepdish202@gmail.com",
-  siteVersion: "1.1",     // ← поднимайте номер при каждом обновлении файла
+  siteVersion: "1.2",     // ← поднимайте номер при каждом обновлении файла
   // Счётчик посещений. Статистика хранится на сервере сервиса,
   // поэтому замена index.html её НЕ обнуляет. Заполните нужный:
   goatcounterCode: "",     // код с goatcounter.com, напр. "deepdish" → deepdish.goatcounter.com
@@ -700,45 +708,52 @@ const CONFIG = {
   const trackTitleEl = document.getElementById('trackTitle');
   document.getElementById('warnPath').textContent = CONFIG.musicFolder + "/";
 
-  /* --- фото участников: спрашиваем список файлов у GitHub --- */
+  /* --- фото участников: грузим прямо из репозитория --- */
   (function(){
     const imgs = Array.from(document.querySelectorAll('img.member-photo'));
     if (!imgs.length) return;
     const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
 
+    function note(img, text){
+      const ph = img.parentElement.querySelector('.ph small');
+      if (ph) ph.textContent = text;
+    }
     function show(img, url){
       img.onload = () => {
         img.style.display = 'block';
         const ph = img.parentElement.querySelector('.ph');
         if (ph) ph.remove();
       };
-      img.onerror = () => {};
+      img.onerror = () => note(img, 'файл найден, но не открывается');
       img.src = url;
     }
 
-    /* план А: реальный список файлов из репозитория */
     fetch("https://api.github.com/repos/" + CONFIG.githubUser + "/" +
           CONFIG.githubRepo + "/contents/images")
-      .then(r => r.ok ? r.json() : [])
+      .then(r => {
+        if (r.status === 404) throw new Error('нет папки images в репозитории');
+        if (!r.ok) throw new Error('нет ответа от GitHub (код ' + r.status + ')');
+        return r.json();
+      })
       .then(files => {
         const list = (Array.isArray(files) ? files : [])
           .filter(f => f.type === 'file' && IMG_EXT.test(f.name));
-        if (!list.length) throw new Error('empty');
+        if (!list.length) throw new Error('в папке images нет картинок');
         imgs.forEach(img => {
           const base = img.dataset.base.toLowerCase();
-          const hit = list.find(f => f.name.toLowerCase().startsWith(base));
-          if (hit) show(img, hit.path.split('/').map(encodeURIComponent).join('/'));
+          const hit = list.find(f => f.name.toLowerCase().startsWith(base))
+                   || list.find(f => f.name.toLowerCase().includes(base));
+          if (hit) show(img, hit.download_url);   /* прямая ссылка из репозитория */
+          else note(img, 'нет файла с именем ' + base + '.*');
         });
       })
-      .catch(() => {
-        /* план Б: перебор типовых имён, если API недоступен */
+      .catch(err => {
         imgs.forEach(img => {
           const base = img.dataset.base;
-          const cap = base.charAt(0).toUpperCase() + base.slice(1);
           const names = [];
-          ['jpg','jpeg','png','webp','JPG','JPEG','PNG'].forEach(e => {
+          ['jpg','jpeg','png','webp','JPG','PNG'].forEach(e => {
             names.push('images/' + base + '.' + e);
-            names.push('images/' + cap + '.' + e);
+            names.push('images/' + base.charAt(0).toUpperCase() + base.slice(1) + '.' + e);
           });
           let k = 0;
           img.onload = () => {
@@ -746,7 +761,10 @@ const CONFIG = {
             const ph = img.parentElement.querySelector('.ph');
             if (ph) ph.remove();
           };
-          img.onerror = () => { if (k < names.length) img.src = names[k++]; };
+          img.onerror = () => {
+            if (k < names.length) img.src = names[k++];
+            else note(img, String(err.message || err));
+          };
           img.src = names[k++];
         });
       });
