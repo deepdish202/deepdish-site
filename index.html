@@ -151,7 +151,53 @@
     color:var(--ink);opacity:.7;cursor:default;
   }
   .tracklist .empty:hover{background:transparent}
-  .track{font-family:'IBM Plex Mono',monospace;font-size:.74rem;text-align:left;color:var(--ink)}
+  .track{
+    font-family:'IBM Plex Mono',monospace;font-size:.74rem;text-align:left;color:var(--ink);
+    min-width:0;overflow:hidden;
+  }
+  .track span{
+    display:block;max-width:min(260px,42vw);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* ссылка на телеграм */
+  .tg{
+    display:inline-flex;align-items:center;gap:.5rem;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink);text-decoration:none;
+    background:var(--aqua-2);border-radius:999px;
+    padding:.5rem 1.1rem;margin-bottom:1.6rem;
+    transition:background .15s,color .15s,transform .15s;
+  }
+  .tg:hover{background:var(--gray);color:var(--white);transform:translateY(-2px)}
+  .tg svg{width:15px;height:15px;fill:var(--orange);flex-shrink:0}
+  .tg:hover svg{fill:var(--white)}
+  .tg:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+
+  /* ползунок перемотки */
+  .seek{
+    display:flex;align-items:center;gap:.7rem;
+    max-width:420px;margin-top:.9rem;
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--ink);opacity:.85;
+  }
+  .seek input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    flex:1;height:6px;border-radius:3px;cursor:pointer;
+    background:var(--aqua-2);outline:none;
+  }
+  .seek input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:15px;height:15px;border-radius:50%;background:var(--orange);
+    border:2px solid var(--white);cursor:pointer;
+  }
+  .seek input[type=range]::-moz-range-thumb{
+    width:13px;height:13px;border-radius:50%;background:var(--orange);
+    border:2px solid var(--white);cursor:pointer;border:none;
+  }
+  .seek input[type=range]:focus-visible{box-shadow:0 0 0 3px var(--orange)}
+  .seek .t-cur,.seek .t-dur{min-width:34px}
+  .seek .t-dur{text-align:right}
   .track small{display:block;opacity:.65;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase}
 
   /* ---------- SECTIONS ---------- */
@@ -215,6 +261,17 @@
   .tl .dot .pill{width:10px;height:26px;border-radius:5px}
   .tl:nth-child(3) .dot .pill{background:var(--white)}    /* Yoshiesque — белая */
   .tl:nth-child(4) .dot .pill{background:var(--orange)}   /* Yoshiesque Two — оранжевая */
+  .tl.tl-more{display:none}
+  .timeline.open .tl.tl-more{display:grid}
+  .more-btn{
+    margin-top:1.2rem;cursor:pointer;border:none;border-radius:999px;
+    background:var(--aqua-2);color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;
+    padding:.7rem 1.6rem;transition:background .15s,color .15s,transform .15s;
+  }
+  .more-btn:hover{background:var(--gray);color:var(--white);transform:translateY(-2px)}
+  .more-btn:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
   .tl h4{
     font-family:'IBM Plex Mono',monospace;font-weight:500;text-transform:uppercase;
     letter-spacing:.1em;font-size:.95rem;color:#3A4745;
@@ -315,10 +372,9 @@
     .duo{grid-template-columns:1fr}
     .fb-row{grid-template-columns:1fr}
     .tl{grid-template-columns:74px 18px 1fr;gap:.7rem}
-    .track span{
-      display:inline-block;max-width:50vw;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;
-    }
+    .track span{max-width:38vw}
+    .seek{max-width:100%}
+    .tg{font-size:.66rem;letter-spacing:.12em}
     #viz{height:90px}
   }
   @media (max-width:380px){
@@ -364,7 +420,11 @@ const CONFIG = {
 
 <header>
   <div class="hero-inner">
-    <div class="eyebrow">неофициальная фан-страница</div>
+    <div class="eyebrow">неофициальная страница</div>
+    <a class="tg" href="https://t.me/DEEPDISH" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.8 15.6l-.4 4.2c.5 0 .8-.2 1.1-.5l2.6-2.5 5.4 3.9c1 .5 1.7.3 1.9-.9l3.5-16.4c.3-1.4-.5-2-1.5-1.7L1.1 9.4C-.2 9.9-.2 10.7.9 11l5.6 1.7L19.4 4.9c.6-.4 1.2-.2.7.2"/></svg>
+      связаться со мной · @DEEPDISH
+    </a>
     <h2>Deep Dish<br><span class="w">Fan Page</span></h2>
     <p class="sub">Dubfire и Sharam. Дуэт, который научил танцполы дышать медленно и глубоко.</p>
     <canvas id="viz" aria-hidden="true"></canvas>
@@ -383,6 +443,11 @@ const CONFIG = {
         <small id="albumLabel">now playing</small>
         <span id="trackTitle">загрузка…</span>
       </div>
+    </div>
+    <div class="seek">
+      <span class="t-cur" id="tCur">0:00</span>
+      <input type="range" id="seek" min="0" max="1000" value="0" step="1" aria-label="Перемотка трека">
+      <span class="t-dur" id="tDur">0:00</span>
     </div>
   </div>
 </header>
@@ -407,11 +472,9 @@ const CONFIG = {
           </div>
           <small>загрузите фото: images/dubfire.jpg</small>
         </div>
-        <img src="images/dubfire.jpg" alt="Dubfire" loading="lazy"
-             onerror="this.remove()" onload="this.previousElementSibling.remove()">
+        <img class="member-photo" data-base="dubfire" alt="Dubfire" loading="lazy" style="display:none">
       </div>
       <div class="info">
-        <div class="idx">member · 01</div>
         <h4>Dubfire</h4>
         <div class="real">Али Ширазиния</div>
         <p>Тёмная, техничная сторона дуэта. После паузы Deep Dish ушёл в минимал и техно и стал одним из самых востребованных сольных артистов мировой сцены — но фирменная глубина слышна в каждом его сете.</p>
@@ -425,11 +488,9 @@ const CONFIG = {
           </div>
           <small>загрузите фото: images/sharam.jpg</small>
         </div>
-        <img src="images/sharam.jpg" alt="Sharam" loading="lazy"
-             onerror="this.remove()" onload="this.previousElementSibling.remove()">
+        <img class="member-photo" data-base="sharam" alt="Sharam" loading="lazy" style="display:none">
       </div>
       <div class="info">
-        <div class="idx">member · 02</div>
         <h4>Sharam</h4>
         <div class="real">Шарам Тайеби</div>
         <p>Мелодическое сердце Deep Dish. В сольной карьере продолжил хаус-линию дуэта, выпускал большие клубные хиты и держит живую связь с корнями — глубоким, вокальным, тёплым звуком.</p>
@@ -448,11 +509,27 @@ const CONFIG = {
   <div class="sec-head"><span class="pill w s"></span><h3>Хронология</h3></div>
   <div class="timeline">
     <div class="tl">
-      <div class="y">'90s</div>
+      <div class="y">1991</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
-        <h4>Старт в Вашингтоне</h4>
-        <p>Знакомство, первые совместные работы и основание лейбла, вокруг которого вырастет целая сцена.</p>
+        <h4>Знакомство</h4>
+        <p>Али Ширазиния и Шарам Тайеби, оба выходцы из Ирана, встречаются в Вашингтоне и начинают играть вместе.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">1992</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Первые релизы</h4>
+        <p>Появляется имя Deep Dish. Ранние пластинки расходятся по клубам восточного побережья.</p>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="y">1994</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Свой лейбл</h4>
+        <p>Основана Yoshitoshi Recordings — лейбл, названный в честь японского художника Цукиоки Ёситоси. Вокруг него вырастет целая сцена.</p>
       </div>
     </div>
     <div class="tl">
@@ -468,10 +545,10 @@ const CONFIG = {
       <div class="dot"><span class="pill"></span></div>
       <div>
         <h4>Yoshiesque</h4>
-        <p>Первая часть легендарной серии миксов.</p>
+        <p>Первая часть легендарной серии микс-компиляций.</p>
       </div>
     </div>
-    <div class="tl">
+    <div class="tl tl-more">
       <div class="y">2001</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
@@ -479,7 +556,7 @@ const CONFIG = {
         <p>Продолжение: два диска — Westcoast и Eastcoast. Та самая обложка, в стиле которой сделана эта страница.</p>
       </div>
     </div>
-    <div class="tl">
+    <div class="tl tl-more">
       <div class="y">2002</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
@@ -487,7 +564,15 @@ const CONFIG = {
         <p>Премия за лучший ремикс — переработку «Thank You» Dido, ставшую классикой жанра.</p>
       </div>
     </div>
-    <div class="tl">
+    <div class="tl tl-more">
+      <div class="y">2003</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Global Underground</h4>
+        <p>Микс для культовой серии — один из самых узнаваемых их сетов на записи.</p>
+      </div>
+    </div>
+    <div class="tl tl-more">
       <div class="y">2005</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
@@ -495,23 +580,40 @@ const CONFIG = {
         <p>Второй альбом с хитами «Flashdance» и «Say Hello» — пик всемирной славы дуэта.</p>
       </div>
     </div>
-    <div class="tl">
+    <div class="tl tl-more">
       <div class="y">2006</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
         <h4>Сольные пути</h4>
-        <p>Дуэт берёт паузу: Dubfire уходит в жёсткое техно, Sharam развивает сольную карьеру.</p>
+        <p>Дуэт берёт паузу. Dubfire уходит в минимал и техно, Sharam развивает сольную карьеру.</p>
       </div>
     </div>
-    <div class="tl">
+    <div class="tl tl-more">
+      <div class="y">2007</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Сольные вершины</h4>
+        <p>Оба закрепляются как самостоятельные артисты: Dubfire — в техно, Sharam — в хаусе с большими клубными хитами.</p>
+      </div>
+    </div>
+    <div class="tl tl-more">
       <div class="y">2014</div>
       <div class="dot"><span class="pill"></span></div>
       <div>
         <h4>Возвращение</h4>
-        <p>Реюнион, новые синглы и совместные выступления — химия никуда не делась.</p>
+        <p>Реюнион: совместные выступления и новая музыка — химия никуда не делась.</p>
+      </div>
+    </div>
+    <div class="tl tl-more">
+      <div class="y">наши дни</div>
+      <div class="dot"><span class="pill"></span></div>
+      <div>
+        <h4>Наследие</h4>
+        <p>Редкие совместные сеты, переиздания и влияние, которое слышно у нового поколения диджеев.</p>
       </div>
     </div>
   </div>
+  <button class="more-btn" id="moreBtn" aria-expanded="false">Посмотреть все</button>
 </section>
 
 <section>
@@ -542,8 +644,8 @@ const CONFIG = {
 </section>
 
 <section id="feedback">
-  <div class="sec-head"><span class="pill o s"></span><h3>Такой же фанат? Напишите!</h3></div>
-  <p>Собираю вокруг этой страницы людей, которым Deep Dish так же дороги. Идеи, любимые треки, редкие миксы, просто привет — всё в тему. Будем развивать вместе.</p>
+  <div class="sec-head"><span class="pill o s"></span><h3>Мне можно написать!</h3></div>
+  <p>Собираю вокруг этой страницы людей, которым Deep Dish так же нравятся. Идеи, любимые треки, редкие миксы, просто привет — всё в тему. Будем развивать вместе.</p>
   <form id="fbForm" class="fb-form" novalidate>
     <div class="fb-row">
       <label>Имя
@@ -593,6 +695,31 @@ const CONFIG = {
   const warn = document.getElementById('audioWarn');
   const trackTitleEl = document.getElementById('trackTitle');
   document.getElementById('warnPath').textContent = CONFIG.musicFolder + "/";
+
+  /* --- фото участников: пробуем разные расширения и регистр --- */
+  (function(){
+    const EXTS = ['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP'];
+    document.querySelectorAll('img.member-photo').forEach(img => {
+      const base = img.dataset.base;
+      const names = [];
+      EXTS.forEach(e => {
+        names.push('images/' + base + '.' + e);
+        names.push('images/' + base.charAt(0).toUpperCase() + base.slice(1) + '.' + e);
+      });
+      let i = 0;
+      function tryNext(){
+        if (i >= names.length) return;          /* не нашли — остаётся заглушка */
+        img.src = names[i++];
+      }
+      img.addEventListener('error', tryNext);
+      img.addEventListener('load', () => {
+        img.style.display = 'block';
+        const ph = img.parentElement.querySelector('.ph');
+        if (ph) ph.remove();
+      });
+      tryNext();
+    });
+  })();
 
   /* --- альбомы и плейлист: папки внутри music/ становятся альбомами --- */
   const AUDIO_EXT = /\.(mp3|ogg|wav|m4a|aac|flac)$/i;
@@ -661,6 +788,8 @@ const CONFIG = {
     trackTitleEl.textContent = t[current].title +
       (t.length > 1 ? "  ·  " + (current+1) + "/" + t.length : "");
     if (albums[curAlbum]) albumLabelEl.textContent = albums[curAlbum].name;
+    const sk = document.getElementById('seek');
+    if (sk){ sk.value = 0; document.getElementById('tCur').textContent = "0:00"; }
     renderTracks();
     if (autoplay) audio.play().catch(()=>{});
   }
@@ -700,9 +829,7 @@ const CONFIG = {
 
     if (!albums.length){ warn.classList.add('show'); renderTracks(); return; }
     warn.classList.remove('show');
-    hintEl.textContent = albums.length > 1
-      ? 'Выберите альбом — треки переключаются автоматически, по кругу.'
-      : 'Треки переключаются автоматически, по кругу.';
+    hintEl.textContent = albums.length > 1 ? 'Выберите альбом.' : '';
     return selectAlbum(0, false);
   }).catch(() => { warn.classList.add('show'); });
 
@@ -721,6 +848,48 @@ const CONFIG = {
     if (ctx) ctx.resume();
     loadTrack(current + 1, true);
   });
+
+  /* --- раскрытие хронологии --- */
+  (function(){
+    const btn = document.getElementById('moreBtn');
+    const tlWrap = document.querySelector('.timeline');
+    if (!btn || !tlWrap) return;
+    btn.addEventListener('click', () => {
+      const open = tlWrap.classList.toggle('open');
+      btn.textContent = open ? 'Свернуть' : 'Посмотреть все';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+
+  /* --- ползунок перемотки --- */
+  const seekEl = document.getElementById('seek');
+  const tCur = document.getElementById('tCur');
+  const tDur = document.getElementById('tDur');
+  let seeking = false;
+
+  function fmt(sec){
+    if (!isFinite(sec) || sec < 0) return "0:00";
+    const m = Math.floor(sec/60), s = Math.floor(sec%60);
+    return m + ":" + String(s).padStart(2,'0');
+  }
+  audio.addEventListener('loadedmetadata', () => { tDur.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', () => {
+    if (seeking || !isFinite(audio.duration) || !audio.duration) return;
+    seekEl.value = Math.round(audio.currentTime / audio.duration * 1000);
+    tCur.textContent = fmt(audio.currentTime);
+  });
+  seekEl.addEventListener('input', () => {
+    seeking = true;
+    if (isFinite(audio.duration) && audio.duration)
+      tCur.textContent = fmt(seekEl.value/1000 * audio.duration);
+  });
+  function commitSeek(){
+    if (isFinite(audio.duration) && audio.duration)
+      audio.currentTime = seekEl.value/1000 * audio.duration;
+    seeking = false;
+  }
+  seekEl.addEventListener('change', commitSeek);
+  seekEl.addEventListener('pointerup', commitSeek);
 
   /* --- аудиоанализ --- */
   let ctx, analyser, dataArr, audioReady = false;
